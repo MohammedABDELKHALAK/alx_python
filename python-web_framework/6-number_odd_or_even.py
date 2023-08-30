@@ -1,3 +1,11 @@
+
+"""
+models show how can make two variables number and text from route appeare in a template html
+~~~~~~~~~~~~~
+
+"""
+
+
 from flask import Flask, escape, render_template
 
 app = Flask(__name__)

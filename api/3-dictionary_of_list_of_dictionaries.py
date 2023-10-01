@@ -1,6 +1,5 @@
-import requests
 import json
-
+import requests
 
 def fetch_todo_data():
     # Fetch TODO data for all users
@@ -8,7 +7,6 @@ def fetch_todo_data():
     response = requests.get(todo_url)
     todo_data = response.json()
     return todo_data
-
 
 def organize_data(todo_data):
     # Organize data in the specified JSON format
@@ -29,7 +27,6 @@ def organize_data(todo_data):
 
     return organized_data
 
-
 def export_to_json(organized_data):
     # Save data to a JSON file
     filename = "todo_all_employees.json"
@@ -37,7 +34,6 @@ def export_to_json(organized_data):
         json.dump(organized_data, file, indent=4)
 
     print(f"Data exported to {filename}.")
-
 
 if __name__ == "__main__":
     todo_data = fetch_todo_data()

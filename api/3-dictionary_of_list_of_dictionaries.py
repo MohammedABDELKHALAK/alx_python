@@ -1,25 +1,41 @@
 import json
 import requests
 
-def check_user_info():
-    """ Check if all users are in the student's JSON """
-    # Load student's JSON from file
-    with open('todo_all_employees.json', 'r') as file:
-        student_json = json.load(file)
+def fetch_user_tasks():
+    """ Fetch tasks for all users """
+    users = requests.get(users_url).json()
+    tasks_by_user = {}
 
-    # Fetch correct JSON from the API
-    correct_json = requests.get(users_url).json()
+    # Fetch tasks for each user
+    for user in users:
+        user_id = str(user['id'])
+        username = user['username']
+        tasks = requests.get(todos_url, params={'userId': user_id}).json()
 
-    # Check if each correct user ID is in the student's JSON
-    for correct_entry in correct_json:
-        user_id = str(correct_entry['id'])
-        if user_id not in student_json:
-            print("User ID {} Found: Incorrect".format(user_id))
-            return
+        # Add tasks for the user
+        tasks_by_user[user_id] = []
+        for task in tasks:
+            task_info = {
+                'username': username,
+                'task': task['title'],
+                'completed': task['completed']
+            }
+            tasks_by_user[user_id].append(task_info)
 
-    print("All users found: OK")
+    return tasks_by_user
+
+def save_to_json(data, filename):
+    """ Save data to a JSON file """
+    with open(filename, 'w') as file:
+        json.dump(data, file, indent=4)
 
 if __name__ == "__main__":
     users_url = "https://jsonplaceholder.typicode.com/users"
     todos_url = "https://jsonplaceholder.typicode.com/todos"
-    check_user_info()
+    
+    # Fetch tasks for all users
+    tasks_by_user = fetch_user_tasks()
+
+    # Save the data to JSON file
+    save_to_json(tasks_by_user, 'todo_all_employees.json')
+    print('Data exported to todo_all_employees.json')

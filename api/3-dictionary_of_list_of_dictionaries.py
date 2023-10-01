@@ -23,9 +23,16 @@ def organize_data(todo_data):
 
         if user_id not in organized_data:
             organized_data[user_id] = []
+
         organized_data[user_id].append(task_data)
 
     return organized_data
+
+def add_empty_users(organized_data, user_ids):
+    # Ensure all user IDs exist in the organized data
+    for user_id in user_ids:
+        if user_id not in organized_data:
+            organized_data[user_id] = []
 
 def export_to_json(organized_data):
     # Save data to a JSON file
@@ -38,4 +45,9 @@ def export_to_json(organized_data):
 if __name__ == "__main__":
     todo_data = fetch_todo_data()
     organized_data = organize_data(todo_data)
+
+    # Extract unique user IDs
+    user_ids = set(task['userId'] for task in todo_data)
+
+    add_empty_users(organized_data, user_ids)
     export_to_json(organized_data)

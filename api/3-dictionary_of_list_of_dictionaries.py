@@ -35,6 +35,13 @@ def add_empty_users(organized_data, user_ids):
         if user_id not in organized_data:
             organized_data[user_id] = []
 
+    # Check if all users are found
+    all_users_found = all(user_id in organized_data for user_id in user_ids)
+    if all_users_found:
+        print("All users found: OK")
+    else:
+        print("All users found: NOT OK")
+
 def export_to_json(organized_data):
     # Save data to a JSON file
     filename = "todo_all_employees.json"

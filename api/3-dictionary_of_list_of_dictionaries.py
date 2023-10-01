@@ -1,5 +1,6 @@
 import json
 import requests
+import sys
 
 def fetch_todo_data():
     # Fetch TODO data for all users
@@ -43,8 +44,13 @@ def export_to_json(organized_data):
     print(f"Data exported to {filename}.")
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <USER_ID>")
+        sys.exit(1)
+
+    user_id = sys.argv[1]
     todo_data = fetch_todo_data()
-    organized_data = organize_data(todo_data)
+    organized_data = organize_data([task for task in todo_data if task['userId'] == int(user_id)])
 
     # Extract unique user IDs
     user_ids = set(task['userId'] for task in todo_data)

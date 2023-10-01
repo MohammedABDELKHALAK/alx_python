@@ -1,66 +1,25 @@
 import json
 import requests
-import sys
 
-def fetch_todo_data():
-    # Fetch TODO data for all users
-    todo_url = "https://jsonplaceholder.typicode.com/todos"
-    response = requests.get(todo_url)
-    todo_data = response.json()
-    return todo_data
+def check_user_info():
+    """ Check if all users are in the student's JSON """
+    # Load student's JSON from file
+    with open('todo_all_employees.json', 'r') as file:
+        student_json = json.load(file)
 
-def organize_data(todo_data):
-    # Organize data in the specified JSON format
-    organized_data = {}
+    # Fetch correct JSON from the API
+    correct_json = requests.get(users_url).json()
 
-    for task in todo_data:
-        user_id = task['userId']
-        username = task['username']
-        task_data = {
-            "username": username,
-            "task": task['title'],
-            "completed": task['completed']
-        }
+    # Check if each correct user ID is in the student's JSON
+    for correct_entry in correct_json:
+        user_id = str(correct_entry['id'])
+        if user_id not in student_json:
+            print("User ID {} Found: Incorrect".format(user_id))
+            return
 
-        if user_id not in organized_data:
-            organized_data[user_id] = []
-
-        organized_data[user_id].append(task_data)
-
-    return organized_data
-
-def add_empty_users(organized_data, user_ids):
-    # Ensure all user IDs exist in the organized data
-    for user_id in user_ids:
-        if user_id not in organized_data:
-            organized_data[user_id] = []
-
-    # Check if all users are found
-    all_users_found = all(user_id in organized_data for user_id in user_ids)
-    if all_users_found:
-        print("All users found: OK")
-    else:
-        print("All users found: NOT OK")
-
-def export_to_json(organized_data):
-    # Save data to a JSON file
-    filename = "todo_all_employees.json"
-    with open(filename, 'w') as file:
-        json.dump(organized_data, file, indent=4)
-
-    print(f"Data exported to {filename}.")
+    print("All users found: OK")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <USER_ID>")
-        sys.exit(1)
-
-    user_id = sys.argv[1]
-    todo_data = fetch_todo_data()
-    organized_data = organize_data([task for task in todo_data if task['userId'] == int(user_id)])
-
-    # Extract unique user IDs
-    user_ids = set(task['userId'] for task in todo_data)
-
-    add_empty_users(organized_data, user_ids)
-    export_to_json(organized_data)
+    users_url = "https://jsonplaceholder.typicode.com/users"
+    todos_url = "https://jsonplaceholder.typicode.com/todos"
+    check_user_info()

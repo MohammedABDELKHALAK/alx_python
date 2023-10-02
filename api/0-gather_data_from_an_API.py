@@ -20,8 +20,12 @@ def display_todo_progress(user_info, total_tasks, completed_tasks, completed_tit
     """ Display TODO list progress """
     employee_name = user_info['name']
     print(f"Employee {employee_name} is done with tasks({completed_tasks}/{total_tasks}):")
-    for title in completed_titles:
-        print(f"{title} Formatting: OK")
+
+    # Iterate through all task titles
+    for i, title in enumerate(completed_titles, start=1):
+        # Check if the formatting is OK or Incorrect
+        status = "OK" if title.startswith("Task") and title.endswith("Formatting: OK") else "Incorrect"
+        print(f"Task {i} Formatting: {status}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

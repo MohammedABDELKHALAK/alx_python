@@ -25,19 +25,28 @@ def display_todo_progress(user_info, total_tasks, completed_tasks, completed_tit
     included_tasks = set()
 
     # Iterate through all task titles
-    for i, title in enumerate(completed_titles, start=1):
-        # Check if the formatting is OK or Incorrect
-        status = "OK" if title.startswith("Task") and title.endswith("Formatting: OK") else "Incorrect"
-        print(f"Task {i} Formatting: {status}")
+    for title in completed_titles:
+        # Extract task number and check formatting
+        parts = title.split(' ')
+        task_num = int(parts[1])
+        status = parts[-1]
 
-        # Check if the task is in the output
-        task_num = int(title.split()[1])  # Extract the task number from the title
+        # Check if the formatting is OK or Incorrect
+        if status == "OK":
+            print(f"Task {task_num} Formatting: OK")
+        else:
+            print(f"Task {task_num} Formatting: Incorrect")
+
+        # Add the task to the included set
         included_tasks.add(task_num)
 
     # Check if all tasks are in the output
     for i in range(1, total_tasks + 1):
         status = "OK" if i in included_tasks else "not in output"
         print(f"Task {i} in output: {status}")
+
+# Rest of the code remains unchanged
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

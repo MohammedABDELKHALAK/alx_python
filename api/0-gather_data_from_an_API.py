@@ -1,35 +1,34 @@
-import requests
 import sys
+import requests
 
+def fetch_employee_info(employee_id):
+    """ Fetch employee information and TODO list progress """
+    user_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
+    todos_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
 
-def get_employee_info(employee_id):
-    # Fetch employee details
-    employee_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-    response = requests.get(employee_url)
-    employee_data = response.json()
-    employee_name = employee_data['name']
+    user_info = requests.get(user_url).json()
+    todos_info = requests.get(todos_url).json()
 
-    # Fetch employee TODO list
-    todo_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
-    response = requests.get(todo_url)
-    todo_data = response.json()
+    # Calculate TODO list progress
+    total_tasks = len(todos_info)
+    completed_tasks = sum(1 for todo in todos_info if todo['completed'])
 
-    # Calculate task progress
-    total_tasks = len(todo_data)
-    completed_tasks = sum(1 for task in todo_data if task['completed'])
+    return user_info, total_tasks, completed_tasks, [todo['title'] for todo in todos_info if todo['completed']]
 
-    # Display employee TODO list progress
-    print(
-        f"Employee {employee_name} is done with tasks ({completed_tasks}/{total_tasks}):")
-    for task in todo_data:
-        if task['completed']:
-            print(f"\t{task['title']}")
-
+def display_todo_progress(user_info, total_tasks, completed_tasks, completed_titles):
+    """ Display TODO list progress """
+    employee_name = user_info['name']
+    print(f"Employee {employee_name} is done with tasks({completed_tasks}/{total_tasks}):")
+    for title in completed_titles:
+        print(f"\t{title}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python3 script.py <employee_id>")
+        print("Usage: python script.py <employee_id>")
         sys.exit(1)
 
     employee_id = int(sys.argv[1])
-    get_employee_info(employee_id)
+
+    user_info, total_tasks, completed_tasks, completed_titles = fetch_employee_info(employee_id)
+
+    display_todo_progress(user_info, total_tasks, completed_tasks, completed_titles)

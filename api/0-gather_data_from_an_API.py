@@ -1,5 +1,6 @@
-import sys
+import json
 import requests
+import sys
 
 def fetch_employee_info(employee_id):
     """ Fetch employee information and TODO list progress """

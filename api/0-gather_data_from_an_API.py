@@ -20,7 +20,7 @@ def display_todo_progress(user_info, total_tasks, completed_tasks, completed_tit
     """ Display TODO list progress """
     employee_name = user_info['name']
     print(f"Employee {employee_name} is done with tasks({completed_tasks}/{total_tasks}):")
-    for title, is_completed  in completed_titles:
+    for title, is_completed  in zip(completed_titles, completed_tasks):
         formatting_status = "OK" if is_completed else "Incorrect"
         print(f"Task {title} Formatting: {formatting_status}")
 

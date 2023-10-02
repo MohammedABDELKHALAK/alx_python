@@ -45,8 +45,6 @@ def display_todo_progress(user_info, total_tasks, completed_tasks, completed_tit
         status = "OK" if i in included_tasks else "not in output"
         print(f"Task {i} in output: {status}")
 
-# Rest of the code remains unchanged
-
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

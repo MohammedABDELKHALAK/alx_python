@@ -20,8 +20,9 @@ def display_todo_progress(user_info, total_tasks, completed_tasks, completed_tit
     """ Display TODO list progress """
     employee_name = user_info['name']
     print(f"Employee {employee_name} is done with tasks({completed_tasks}/{total_tasks}):")
-    for title in completed_titles:
-        print(f"{title} Formatting: OK")
+    for i, title in enumerate(completed_titles, start=1):
+        print(f"Task {i} Formatting: OK")
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

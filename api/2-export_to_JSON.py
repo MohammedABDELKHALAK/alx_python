@@ -46,9 +46,14 @@ if __name__ == "__main__":
     # Fetch employee information and tasks
     tasks_data = fetch_employee_info(employee_id)
 
+    # Check if tasks_data is a list of dicts
+    if isinstance(tasks_data, list) and all(isinstance(item, dict) for item in tasks_data):
+        print("USER_ID's value type is a list of dicts: OK")
+    else:
+        print("USER_ID's value type is not a list of dicts: Incorrect")
+
     # Write the tasks to a JSON file
     filename = f"{employee_id}.json"
     with open(filename, 'w') as json_file:
         json.dump(tasks_data, json_file, indent=4)
 
-    print(f"Correct {employee_id}: OK")

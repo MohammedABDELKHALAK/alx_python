@@ -43,16 +43,3 @@ if __name__ == "__main__":
         print("Correct user: OK")
     else:
         print("Correct user: Incorrect")
-
-    # Check if the value associated with USER_ID is a list of dicts
-    if isinstance(user_data['tasks'], list) and all(isinstance(item, dict) for item in user_data['tasks']):
-        print("User ID’s value is a list of dicts: OK")
-    else:
-        print("User ID’s value is not a list of dicts: Incorrect")
-
-    # Check if all tasks are found in the list of dicts
-    tasks_count = len(user_data['tasks'])
-    if tasks_count == 0:
-        print("No tasks found for this user")
-    else:
-        print("All tasks found in list of dicts: OK")

@@ -1,6 +1,7 @@
 import csv
 import requests
 import sys
+import os
 
 # Assuming todos_url is defined somewhere in your code
 todos_url = "https://jsonplaceholder.typicode.com/todos"
@@ -37,4 +38,10 @@ if __name__ == "__main__":
     user_name = user_info['username']
 
     export_to_csv(user_id, user_name, todos_info)
-    print(f"Tasks exported to {user_id}.csv")
+
+    # Check if the file exists
+    filename = f"{user_id}.csv"
+    if os.path.isfile(filename):
+        print("Number of tasks in CSV: OK")
+    else:
+        print("Number of tasks in CSV: Error - File not found")

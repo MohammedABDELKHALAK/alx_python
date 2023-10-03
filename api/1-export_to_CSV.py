@@ -1,43 +1,40 @@
-import requests
 import csv
+import requests
 import sys
 
+# Assuming todos_url is defined somewhere in your code
+todos_url = "https://jsonplaceholder.typicode.com/todos"
 
-def get_employee_info(employee_id):
-    # Fetch employee details
-    employee_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-    response = requests.get(employee_url)
-    employee_data = response.json()
-    user_id = employee_data['id']
-    username = employee_data['username']
+def fetch_employee_info(employee_id):
+    """ Fetch employee information and TODO list progress """
+    user_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
+    todos_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
 
-    # Fetch employee TODO list
-    todo_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
-    response = requests.get(todo_url)
-    todo_data = response.json()
+    user_info = requests.get(user_url).json()
+    todos_info = requests.get(todos_url).json()
 
-    # Prepare CSV data
-    csv_data = []
-    for task in todo_data:
-        task_completed_status = "completed" if task['completed'] else "not completed"
-        task_title = task['title']
-        csv_data.append([user_id, username, task_completed_status, task_title])
+    return user_info, todos_info
 
-    # Save data to a CSV file
+def export_to_csv(user_id, user_name, todos):
+    """ Export TODOs to CSV """
     filename = f"{user_id}.csv"
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(
-            ["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"])
-        writer.writerows(csv_data)
-
-    print(f"Data exported to {filename}.")
-
+        writer.writerow(["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"])
+        for todo in todos:
+            writer.writerow([user_id, user_name, str(todo['completed']), todo['title']])
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python3 script.py <employee_id>")
+        print("Usage: python script.py <employee_id>")
         sys.exit(1)
 
     employee_id = int(sys.argv[1])
-    get_employee_info(employee_id)
+
+    user_info, todos_info = fetch_employee_info(employee_id)
+
+    user_id = user_info['id']
+    user_name = user_info['username']
+
+    export_to_csv(user_id, user_name, todos_info)
+    print(f"Tasks exported to {user_id}.csv")

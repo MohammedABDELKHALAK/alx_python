@@ -8,17 +8,15 @@ todos_url = "https://jsonplaceholder.typicode.com/todos"
 def fetch_employee_info(employee_id):
     """ Fetch employee information and TODO list progress """
     user_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-    todos_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
 
     user_info = requests.get(user_url).json()
-    todos_info = requests.get(todos_url).json()
 
-    return user_info, todos_info
+    return user_info
 
 def export_to_csv(user_id, user_name, todos):
     """ Export TODOs to CSV """
     filename = f"{user_id}.csv"
-    with open(filename, mode='r', newline='') as file:
+    with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"])
         for todo in todos:
@@ -31,10 +29,9 @@ if __name__ == "__main__":
 
     employee_id = int(sys.argv[1])
 
-    user_info, todos_info = fetch_employee_info(employee_id)
+    user_info = fetch_employee_info(employee_id)
 
     user_id = user_info['id']
     user_name = user_info['username']
 
-    export_to_csv(user_id, user_name, todos_info)
-    print(f"Tasks exported to {user_id}.csv")
+    print(f"User ID: {user_id}, Username: {user_name}")

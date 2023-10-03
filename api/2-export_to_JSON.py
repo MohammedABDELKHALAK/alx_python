@@ -1,43 +1,52 @@
-import requests
 import json
+import requests
 import sys
 
+def fetch_employee_info(employee_id):
+    """
+    Fetch employee information and TODO list progress for a given employee ID.
 
-def get_employee_info(employee_id):
-    # Fetch employee details
-    employee_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-    response = requests.get(employee_url)
-    employee_data = response.json()
-    user_id = employee_data['id']
-    username = employee_data['username']
+    Parameters:
+    employee_id (int): The employee ID.
 
-    # Fetch employee TODO list
-    todo_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
-    response = requests.get(todo_url)
-    todo_data = response.json()
+    Returns:
+    dict: A dictionary containing the employee's tasks.
+    """
+    # URLs for user and todos information
+    user_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
+    todos_url = f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}"
 
-    # Prepare JSON data
-    json_data = {"USER_ID": []}
-    for task in todo_data:
-        task_data = {
-            "task": task['title'],
-            "completed": task['completed'],
-            "username": username
+    # Fetch user and todos information from the URLs
+    user_info = requests.get(user_url).json()
+    todos_info = requests.get(todos_url).json()
+
+    # Create a dictionary to store the employee's tasks
+    user_tasks = {"task_list": []}
+
+    # Iterate through the todos and extract relevant information
+    for todo in todos_info:
+        task_info = {
+            "task": todo["title"],
+            "completed": todo["completed"],
+            "username": user_info["username"]
         }
-        json_data["USER_ID"].append(task_data)
+        user_tasks["task_list"].append(task_info)
 
-    # Save data to a JSON file
-    filename = f"{user_id}.json"
-    with open(filename, 'w') as file:
-        json.dump(json_data, file, indent=4)
-
-    print(f"Data exported to {filename}.")
-
+    return user_tasks
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python3 script.py <employee_id>")
+        print("Usage: python script.py <employee_id>")
         sys.exit(1)
 
     employee_id = int(sys.argv[1])
-    get_employee_info(employee_id)
+
+    # Fetch employee information and tasks
+    tasks_data = fetch_employee_info(employee_id)
+
+    # Write the tasks to a JSON file
+    filename = f"{employee_id}.json"
+    with open(filename, 'w') as json_file:
+        json.dump(tasks_data, json_file, indent=4)
+
+    print(f"Tasks for employee {employee_id} exported to {filename}")

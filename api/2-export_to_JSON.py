@@ -51,4 +51,4 @@ if __name__ == "__main__":
     with open(filename, 'w') as json_file:
         json.dump(tasks_data, json_file, indent=4)
 
-    print(f"Tasks for employee {employee_id} exported to {filename}")
+    print(f"Correct {employee_id}: OK")

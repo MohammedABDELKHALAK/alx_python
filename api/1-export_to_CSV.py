@@ -1,7 +1,6 @@
 import csv
 import requests
 import sys
-import os
 
 # Assuming todos_url is defined somewhere in your code
 todos_url = "https://jsonplaceholder.typicode.com/todos"
@@ -19,7 +18,7 @@ def fetch_employee_info(employee_id):
 def export_to_csv(user_id, user_name, todos):
     """ Export TODOs to CSV """
     filename = f"{user_id}.csv"
-    with open(filename, mode='w', newline='') as file:
+    with open(filename, mode='r', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"])
         for todo in todos:
@@ -38,10 +37,4 @@ if __name__ == "__main__":
     user_name = user_info['username']
 
     export_to_csv(user_id, user_name, todos_info)
-
-    # Check if the file exists
-    filename = f"{user_id}.csv"
-    if os.path.isfile(filename):
-        print("Number of tasks in CSV: OK")
-    else:
-        print("Number of tasks in CSV: Error - File not found")
+    print(f"Tasks exported to {user_id}.csv")
